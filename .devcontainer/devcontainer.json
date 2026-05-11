@@ -12,25 +12,19 @@
       "version": "latest"
     },        
     "ghcr.io/devcontainers/features/sshd:1": {
-            "version": "latest"
-    },
-    "forwardPorts": [443],
-    "portsAttributes": {
-        "443": {
-            "label": "Xray Port",
-            "visibility": "public"
-        }
+      "version": "latest"
     }
   },
   "postAttachCommand": {
-    "expose": "gh codespace ports visibility 443:public -c $CODESPACE_NAME",
-    "start": "sudo /usr/local/bin/xray run -c /etc/xray/g2ray.json"
+    // استفاده از & در انتهای دستور باعث می‌شود پروسه در پس‌زمینه بماند و ستاپ متوقف نشود
+    "start": "nohup sudo /usr/local/bin/xray run -c /etc/xray/g2ray.json > /tmp/xray.log 2>&1 &"
   },
   "portsAttributes": {
     "443": {
       "label": "g2ray",
-      "protocol": "http",
-      "onAutoForward": "silent"
+      "protocol": "https", // چون TLS استفاده می‌کنید https بهتر است
+      "visibility": "public", // مهم‌ترین بخش برای حل ارور 401
+      "onAutoForward": "openPreview" 
     }
   },
   "forwardPorts": [443],
